@@ -10,12 +10,29 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical">
-      
-      <ImageView
-          android:layout_width="220dp"
-          android:layout_height="180dp"
-          android:src="@drawable/opticdev_gray"
-          android:layout_gravity="center"/>
+
+      <io.github.florent37.shapeofview.shapes.DiagonalView
+          android:layout_width="match_parent"
+          android:layout_height="220dp"
+          android:elevation="4dp"
+          app:shape_diagonal_angle="10"
+          app:shape_diagonal_position="bottom">
+
+          <!-- YOUR CONTENT -->
+
+          <View
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/red"/>
+
+          <ImageView
+              android:layout_width="220dp"
+              android:layout_height="180dp"
+              android:src="@drawable/opticdev_gray"
+              android:layout_gravity="center|top"/>
+      </io.github.florent37.shapeofview.shapes.DiagonalView>
+
+
 
       <LinearLayout
           android:layout_width="match_parent"
@@ -39,6 +56,7 @@
               <com.google.android.material.textfield.TextInputEditText
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
+                  android:background="@color/white"
                   android:hint="Correo electronico"
                   android:inputType="textEmailAddress"/>
 
@@ -68,6 +86,7 @@
               <com.google.android.material.textfield.TextInputEditText
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
+                  android:background="@color/white"
                   android:hint="Contraseña"
                   android:inputType="textPassword"/>
 
@@ -82,7 +101,8 @@
           android:layout_marginTop="40dp"
           android:layout_marginLeft="20dp"
           android:layout_marginRight="20dp"
-          android:backgroundTint="@color/red"/>
+          android:backgroundTint="@color/red"
+          android:background="@drawable/rounded_button"/>
 
   </LinearLayout>
 
