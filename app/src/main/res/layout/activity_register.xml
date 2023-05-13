@@ -35,7 +35,7 @@
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textAlignment="center"
-                android:layout_marginTop="50dp"/>
+                android:layout_marginTop="20dp"/>
 
             <ImageView
                 android:layout_width="150dp"
@@ -177,5 +177,13 @@
         android:text="REFGISTRATE"
         android:layout_marginVertical="20dp"
         android:layout_marginHorizontal="20dp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circleImageBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_arrow_left"
+        app:civ_circle_background_color="@color/white"
+        android:layout_margin="15dp"/>
     
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
