@@ -64,6 +64,6 @@ public class RegisterActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
-    }
+    }  
 
 }
