@@ -14,7 +14,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     TextInputEditText mTextInputUsername, getmTextInputEmail, getmTextInputPassword,getmTextInputConfirmPassword;
     Button btnRegister;
     FirebaseAuth mAuth;
+    FirebaseFirestore mFirestore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         getmTextInputConfirmPassword = findViewById(R.id.textInputPasswordConfirmar);
         btnRegister = findViewById(R.id.btnRegister);
         mAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,12 +69,12 @@ public class RegisterActivity extends AppCompatActivity {
             if(isEmailValid(email)){
                 if(password.equals(confirmpassword)){
                     if (password.length() >= 6){
-                        createUser(email,password);
+                        createUser(username,email,password);
                     }else {
                         Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_LONG).show();
                     }
                 }
-                Toast.makeText(this, "Has ingresado todos los datos y el correno es valdio", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Datos bien capturados", Toast.LENGTH_LONG).show();
             }
             else{
                 Toast.makeText(this, "Has ingresado todos los datos pero el correno no es valdio :c", Toast.LENGTH_LONG).show();
@@ -86,16 +92,31 @@ public class RegisterActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
-   private void createUser (String email,String password){
+   private void createUser (final String username,final String email,String password){
         mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(RegisterActivity.this, "Usuario registrado :)", Toast.LENGTH_LONG).show();
+                    String id = mAuth.getCurrentUser().getUid();
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("username",username);
+                    map.put("email",email);
+
+                    mFirestore.collection("Users").document(id).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(RegisterActivity.this, "Usuario almacenado en la base de datos :)", Toast.LENGTH_LONG).show();
+                            }else{
+                                Toast.makeText(RegisterActivity.this, "Usuario NO almacenado en la base de datos :/", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }else{
                     Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario :c", Toast.LENGTH_LONG).show();
                 }
             }
         });
    }
+
 }
