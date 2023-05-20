@@ -1,8 +1,10 @@
-package com.example.whatsappproyect;
+package com.example.whatsappproyect.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.whatsappproyect.R;
 
 public class HomeActivity extends AppCompatActivity {
 
