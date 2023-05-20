@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 // Google Sign In failed, update UI appropriately
                 Log.w("ERROR", "Google sign in failed", e);
                 // ...
-            }
+            }//s
         }
     }
     // [END onactivityresult]
