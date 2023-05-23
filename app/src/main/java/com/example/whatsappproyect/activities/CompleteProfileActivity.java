@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.whatsappproyect.R;
+import com.example.whatsappproyect.models.User;
+import com.example.whatsappproyect.providers.AuthProvider;
+import com.example.whatsappproyect.providers.UsersProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -22,8 +25,8 @@ import java.util.Map;
 public class CompleteProfileActivity extends AppCompatActivity {
     TextInputEditText mTextInputUsername;
     Button mButtonRegister;
-    FirebaseAuth mAuth;
-    FirebaseFirestore mFirestore;
+    AuthProvider mAuthProvider;
+    UsersProvider mUsersProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +36,8 @@ public class CompleteProfileActivity extends AppCompatActivity {
         mTextInputUsername = findViewById(R.id.textInputUsername);
         mButtonRegister = findViewById(R.id.btnConfirm);
 
-        mAuth = FirebaseAuth.getInstance();
-        mFirestore = FirebaseFirestore.getInstance();
+        mAuthProvider = new AuthProvider();
+        mUsersProvider = new UsersProvider();
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,10 +59,11 @@ public class CompleteProfileActivity extends AppCompatActivity {
     }
 
     private void updateUser(final String username) {
-        String id = mAuth.getCurrentUser().getUid();
-        Map<String, Object> map = new HashMap<>();
-        map.put("username", username);
-        mFirestore.collection("Users").document(id).update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+        String id = mAuthProvider.getUid();
+        User user = new User();
+        user.setUsername(username);
+        user.setId(id);
+        mUsersProvider.update(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {

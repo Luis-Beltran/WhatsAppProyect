@@ -3,18 +3,24 @@ package com.example.whatsappproyect.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.hardware.usb.UsbRequest;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.whatsappproyect.R;
+import com.example.whatsappproyect.models.User;
+import com.example.whatsappproyect.providers.AuthProvider;
+import com.example.whatsappproyect.providers.UsersProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.UserDataHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +33,8 @@ public class RegisterActivity extends AppCompatActivity {
     CircleImageView mcircleImageViewBack;
     TextInputEditText mTextInputUsername, getmTextInputEmail, getmTextInputPassword,getmTextInputConfirmPassword;
     Button btnRegister;
-    FirebaseAuth mAuth;
-    FirebaseFirestore mFirestore;
+    AuthProvider mAuthProvider;
+    UsersProvider mUsersProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +47,9 @@ public class RegisterActivity extends AppCompatActivity {
         getmTextInputPassword = findViewById(R.id.textInputPassword);
         getmTextInputConfirmPassword = findViewById(R.id.textInputPasswordConfirmar);
         btnRegister = findViewById(R.id.btnRegister);
-        mAuth = FirebaseAuth.getInstance();
-        mFirestore = FirebaseFirestore.getInstance();
+
+        mAuthProvider = new AuthProvider();
+        mUsersProvider = new UsersProvider();
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,25 +68,29 @@ public class RegisterActivity extends AppCompatActivity {
     private void register(){
         String username = mTextInputUsername.getText().toString();
         String email = getmTextInputEmail.getText().toString();
-        String password = getmTextInputPassword.getText().toString();
-        String confirmpassword = getmTextInputConfirmPassword.getText().toString();
+        String password  = getmTextInputPassword.getText().toString();
+        String confirmPassword = getmTextInputConfirmPassword.getText().toString();
 
-        if(!username.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmpassword.isEmpty()){
-            if(isEmailValid(email)){
-                if(password.equals(confirmpassword)){
-                    if (password.length() >= 6){
-                        createUser(username,email,password);
-                    }else {
-                        Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_LONG).show();
+        if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
+            if (isEmailValid(email)) {
+                if (password.equals(confirmPassword)) {
+                    if (password.length() >= 6) {
+                        createUser(username, email, password);
+                    }
+                    else {
+                        Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
                     }
                 }
-                Toast.makeText(this, "Datos bien capturados", Toast.LENGTH_LONG).show();
+                else {
+                    Toast.makeText(this, "Las contraseña no coinciden", Toast.LENGTH_SHORT).show();
+                }
             }
-            else{
-                Toast.makeText(this, "Has ingresado todos los datos pero el correno no es valdio :c", Toast.LENGTH_LONG).show();
+            else {
+                Toast.makeText(this, "Insertaste todos los campos pero el correo no es valido", Toast.LENGTH_LONG).show();
             }
-        }else{
-            Toast.makeText(this, "Ingresa todos los datos para continuar :c", Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(this, "Para continuar inserta todos los campos", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -91,31 +102,32 @@ public class RegisterActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
-   private void createUser (final String username,final String email,String password){
-        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    String id = mAuth.getCurrentUser().getUid();
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("username",username);
-                    map.put("email",email);
+   private void createUser (final String username,final String email,String password) {
+       mAuthProvider.register(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+           @Override
+           public void onComplete(@NonNull Task<AuthResult> task) {
+               if (task.isSuccessful()) {
+                   String id = mAuthProvider.getUid();
 
-                    mFirestore.collection("Users").document(id).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(RegisterActivity.this, "Usuario almacenado en la base de datos :)", Toast.LENGTH_LONG).show();
-                            }else{
-                                Toast.makeText(RegisterActivity.this, "Usuario NO almacenado en la base de datos :/", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                }else{
-                    Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario :c", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+                   User user = new User();
+                   user.setId(id);
+                   user.setEmail(email);
+                   user.setUsername(username);
+
+                   mUsersProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                       @Override
+                       public void onComplete(@NonNull Task<Void> task) {
+                           if (task.isSuccessful()) {
+                               Toast.makeText(RegisterActivity.this, "El usuario se almaceno correctamente en la base de datos", Toast.LENGTH_SHORT).show();
+                           } else {
+                               Toast.makeText(RegisterActivity.this, "No se pudo almacenar el usuario en la base de datos", Toast.LENGTH_SHORT).show();
+                           }
+                       }
+                   });
+               } else {
+                   Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
+               }
+           }
+       });
    }
-
 }

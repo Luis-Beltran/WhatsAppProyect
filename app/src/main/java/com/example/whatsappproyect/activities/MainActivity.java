@@ -12,7 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.whatsappproyect.R;
+import com.example.whatsappproyect.models.User;
 import com.example.whatsappproyect.providers.AuthProvider;
+import com.example.whatsappproyect.providers.UsersProvider;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnLogin;
     AuthProvider mAuthProvider;
     SignInButton mButtoGoogle;
-    FirebaseFirestore mFirestore;
+    UsersProvider mUsersProvider;
 
     //GOOGLE SIGN IN
     private static final String TAG = "MainActivity";
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        mFirestore = FirebaseFirestore.getInstance();
+        mUsersProvider = new UsersProvider();
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkUserExist(final String id) {
-        mFirestore.collection("Users").document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        mUsersProvider.getUser(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if(documentSnapshot.exists()){
@@ -139,9 +141,10 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }else{
                     String email = mAuthProvider.getEmail();
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("email", email);
-                    mFirestore.collection("Users").document(id).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    User user = new User();
+                    user.setEmail(email);
+                    user.setId(id);
+                    mUsersProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
