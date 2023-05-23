@@ -3,6 +3,7 @@ package com.example.whatsappproyect.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,11 +23,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+import dmax.dialog.SpotsDialog;
+
 public class CompleteProfileActivity extends AppCompatActivity {
     TextInputEditText mTextInputUsername;
     Button mButtonRegister;
     AuthProvider mAuthProvider;
     UsersProvider mUsersProvider;
+    AlertDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,12 @@ public class CompleteProfileActivity extends AppCompatActivity {
 
         mAuthProvider = new AuthProvider();
         mUsersProvider = new UsersProvider();
+
+        mDialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Espere por favor")
+                .setCancelable(false)
+                .build();
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,9 +73,11 @@ public class CompleteProfileActivity extends AppCompatActivity {
         User user = new User();
         user.setUsername(username);
         user.setId(id);
+        mDialog.show();
         mUsersProvider.update(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                mDialog.dismiss();
                 if (task.isSuccessful()) {
                     Intent intent = new Intent(CompleteProfileActivity.this, HomeActivity.class);
                     startActivity(intent);
