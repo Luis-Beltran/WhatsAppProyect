@@ -146,6 +146,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/textViewCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="CATEGORIAS"
@@ -187,6 +188,7 @@
                     >
 
                     <ImageView
+                        android:id="@+id/imageViewPc"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/icon_pc" />
@@ -220,6 +222,7 @@
                     app:cardElevation="10dp">
 
                     <ImageView
+                        android:id="@+id/imageViewPS4"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/icon_ps4" />
@@ -227,6 +230,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <TextView
+                    android:id="@+id/imageViewPS4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="PS4"
@@ -253,6 +257,7 @@
                     app:cardElevation="10dp">
 
                     <ImageView
+                        android:id="@+id/imageViewXbox"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/icon_xbox"
@@ -288,6 +293,7 @@
                     app:cardElevation="10dp">
 
                     <ImageView
+                        android:id="@+id/imageViewNintendo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/icon_nintendo" />
@@ -321,5 +327,12 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
         android:textColor="@color/white" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circleImageBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_arrow_left"
+        android:layout_margin="15dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
