@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     //GOOGLE SIGN IN
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 9001;
+    private final int REQUEST_CODE_GOOGLE = 1;
     private GoogleSignInClient mGoogleSignInClient;
     AlertDialog mDialog;
 
@@ -182,6 +183,21 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mAuthProvider.getUserSession() != null) {
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+    }
+
+    private void signInGoogle() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE);
+    }
 
     private void login(){
         String email = mtTextInputEmail.getText().toString();
