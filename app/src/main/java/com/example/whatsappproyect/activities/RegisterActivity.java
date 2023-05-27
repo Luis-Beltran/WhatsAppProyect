@@ -24,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.w3c.dom.UserDataHandler;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -35,6 +36,7 @@ import dmax.dialog.SpotsDialog;
 public class RegisterActivity extends AppCompatActivity {
     CircleImageView mcircleImageViewBack;
     TextInputEditText mTextInputUsername, getmTextInputEmail, getmTextInputPassword,getmTextInputConfirmPassword;
+    TextInputEditText mTextInputPhone;
     Button btnRegister;
     AuthProvider mAuthProvider;
     UsersProvider mUsersProvider;
@@ -49,6 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
         mTextInputUsername = findViewById(R.id.textInputUser);
         getmTextInputEmail = findViewById(R.id.textInputEmail);
         getmTextInputPassword = findViewById(R.id.textInputPassword);
+        mTextInputPhone = findViewById(R.id.textInputPhone);
         getmTextInputConfirmPassword = findViewById(R.id.textInputPasswordConfirmar);
         btnRegister = findViewById(R.id.btnRegister);
 
@@ -80,12 +83,13 @@ public class RegisterActivity extends AppCompatActivity {
         String email = getmTextInputEmail.getText().toString();
         String password  = getmTextInputPassword.getText().toString();
         String confirmPassword = getmTextInputConfirmPassword.getText().toString();
+        String phone = mTextInputPhone.getText().toString();
 
-        if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
+        if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty() && !phone.isEmpty()) {
             if (isEmailValid(email)) {
                 if (password.equals(confirmPassword)) {
                     if (password.length() >= 6) {
-                        createUser(username, email, password);
+                        createUser(username, email, password, phone);
                     }
                     else {
                         Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
@@ -112,7 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
-   private void createUser (final String username,final String email,String password) {
+   private void createUser (final String username,final String email,String password, String phone) {
         mDialog.show();
        mAuthProvider.register(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
            @Override
@@ -124,6 +128,8 @@ public class RegisterActivity extends AppCompatActivity {
                    user.setId(id);
                    user.setEmail(email);
                    user.setUsername(username);
+                   user.setPhone(phone);
+                   user.setTimestamp(new Date().getTime());
 
                    mUsersProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                        @Override
