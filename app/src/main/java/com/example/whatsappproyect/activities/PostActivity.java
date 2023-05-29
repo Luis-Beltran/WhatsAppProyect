@@ -20,20 +20,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.storage.UploadTask;
 import com.example.whatsappproyect.R;
 import com.example.whatsappproyect.models.Post;
 import com.example.whatsappproyect.providers.AuthProvider;
 import com.example.whatsappproyect.providers.ImageProvider;
 import com.example.whatsappproyect.providers.PostProvider;
 import com.example.whatsappproyect.utils.FileUtil;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -64,11 +62,11 @@ public class PostActivity extends AppCompatActivity {
     String mTitle = "";
     String mDescription = "";
     AlertDialog mDialog;
+
     AlertDialog.Builder mBuilderSelector;
     CharSequence options[];
     private final int GALLERY_REQUEST_CODE = 1;
     private final int GALLERY_REQUEST_CODE_2 = 2;
-
     private final int PHOTO_REQUEST_CODE = 3;
     private final int PHOTO_REQUEST_CODE_2 = 4;
 
@@ -97,9 +95,8 @@ public class PostActivity extends AppCompatActivity {
                 .setCancelable(false).build();
 
         mBuilderSelector = new AlertDialog.Builder(this);
-        mBuilderSelector.setTitle("Selecciona una Opcion");
-        options = new CharSequence[]{"Imagen de Galeria", "Tomar Imagen"};
-
+        mBuilderSelector.setTitle("Selecciona una opcion");
+        options = new CharSequence[] {"Imagen de galeria", "Tomar foto"};
 
         mImageViewPost1 = findViewById(R.id.imageViewPost1);
         mImageViewPost2 = findViewById(R.id.imageViewPost2);
@@ -130,14 +127,14 @@ public class PostActivity extends AppCompatActivity {
         mImageViewPost1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectOptionImage(GALLERY_REQUEST_CODE);
+                selectOptionImage(1);
             }
         });
 
         mImageViewPost2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectOptionImage(GALLERY_REQUEST_CODE_2);
+                selectOptionImage(2);
             }
         });
 
@@ -214,7 +211,7 @@ public class PostActivity extends AppCompatActivity {
             }
 
             if (photoFile != null) {
-                Uri photoUri = FileProvider.getUriForFile(PostActivity.this, "com.example.whatsappproyect", photoFile);
+                Uri photoUri = FileProvider.getUriForFile(PostActivity.this, "com.optic.socialmediagamer", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 startActivityForResult(takePictureIntent, requestCode);
             }
@@ -238,6 +235,8 @@ public class PostActivity extends AppCompatActivity {
         }
         return photoFile;
     }
+
+
     private void clickPost() {
 
         mTitle = mTextInputTitle.getText().toString();
@@ -266,7 +265,7 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-    private void saveImage(File imageFile1,File imageFile2) {
+    private void saveImage(File imageFile1, final File imageFile2) {
         mDialog.show();
         mImageProvider.save(PostActivity.this, imageFile1).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
