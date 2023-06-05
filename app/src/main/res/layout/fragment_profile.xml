@@ -25,7 +25,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:background="@color/white" />
+                    android:background="@color/black" />
 
                 <ImageView
                     android:id="@+id/imageViewCover"
@@ -170,16 +170,31 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_marginTop="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No hay publicaciones"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:textSize="18dp"
-            android:textStyle="italic" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No hay publicaciones"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:textSize="18dp"
+                android:textStyle="italic" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewMyPost"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
+
+        </LinearLayout>
+
+
 
     </androidx.core.widget.NestedScrollView>
 
