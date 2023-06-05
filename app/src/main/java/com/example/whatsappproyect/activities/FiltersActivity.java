@@ -3,11 +3,13 @@ package com.example.whatsappproyect.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -27,6 +29,7 @@ public class FiltersActivity extends AppCompatActivity {
     PostProvider mPostProvider;
     PostsAdapter mPostsAdapter;
 
+    TextView mTextViewNumberFilter;
     Toolbar mToolbar;
 
     @Override
@@ -35,12 +38,13 @@ public class FiltersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_filters);
         mRecyclerView = findViewById(R.id.recyclerViewFilter);
         mToolbar = findViewById(R.id.toolbar);
+        mTextViewNumberFilter = findViewById(R.id.textViewNumberFilter);
+
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Filtros");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(FiltersActivity.this);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(FiltersActivity.this, 2));
 
         mExtraCategory = getIntent().getStringExtra("category");
 
@@ -58,7 +62,7 @@ public class FiltersActivity extends AppCompatActivity {
                 new FirestoreRecyclerOptions.Builder<Post>()
                         .setQuery(query, Post.class)
                         .build();
-        mPostsAdapter = new PostsAdapter(options, FiltersActivity.this);
+        mPostsAdapter = new PostsAdapter(options, FiltersActivity.this, mTextViewNumberFilter);
         mRecyclerView.setAdapter(mPostsAdapter);
         mPostsAdapter.startListening();
     }
