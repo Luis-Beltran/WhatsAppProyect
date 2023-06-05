@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_chat"
-                    android:backgroundTint="@color/red"
+                    app:backgroundTint="@color/red"
                     app:tint="@color/white"
                     android:layout_gravity="right|bottom"
                     android:layout_marginRight="15dp"
@@ -108,6 +108,7 @@
                         android:layout_height="wrap_content"
                         android:text="VER PERFIL"
                         android:layout_marginLeft="10dp"
+                        android:background="@drawable/button_border"
                         android:textColor="@color/white"
                         android:paddingRight="10dp"
                         android:paddingLeft="10dp" />
@@ -191,6 +192,42 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="25dp"
                 android:layout_marginLeft="25dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorGray"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="COMENTARIOS"
+                android:textColor="@color/black"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewComments"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 
